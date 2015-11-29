@@ -15,20 +15,24 @@ apply plugin: 'groovy'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'spring-boot' 
-apply plugin: 'io.spring.dependency-management' 
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'war'
 
-jar {
+war {
     baseName = 'cloudsoa-springbootservice'
     version = '0.1-SNAPSHOT'
 }
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 repositories {
     // mavenLocal()
     mavenCentral()
 }
 
+configurations {
+    providedRuntime
+}
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-security:${springBootVersion}")
@@ -37,6 +41,7 @@ dependencies {
     // spring-security-oauth2 är egentligen en dependency från spring-cloud-starter-oauth2
     compile("org.springframework.security.oauth:spring-security-oauth2:2.0.8.RELEASE")
     compile("org.codehaus.groovy:groovy")
+    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
     //testCompile("org.springframework.boot:spring-boot-starter-test")
 }
 
