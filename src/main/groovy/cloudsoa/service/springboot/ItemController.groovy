@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
 
 import javax.validation.Valid
+import java.security.Principal
 
 @RestController
 @RequestMapping("/items")
@@ -33,9 +34,10 @@ class ItemController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Item> create(@Valid @RequestBody Item employee){
+    public ResponseEntity<Item> create(@Valid @RequestBody Item employee, Principal principal){
         employee.id = ++counter
         employee.modified_at = new Date()
+        employee.modified_by = principal?.name
         items.add(employee)
 
         return new ResponseEntity<Item>(employee, HttpStatus.CREATED)
@@ -43,12 +45,13 @@ class ItemController {
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<Item> update(@PathVariable int id, @Valid @RequestBody Item employee){
+    public ResponseEntity<Item> update(@PathVariable int id, @Valid @RequestBody Item employee, Principal principal){
         Item old = items.find { it.id == id }
 
         if (old) {
             old.text = employee.text
             old.modified_at = new Date()
+            old.modified_by = principal?.name
             return new ResponseEntity<Item>(HttpStatus.OK)
         } else {
             return new ResponseEntity<Item>(HttpStatus.NOT_FOUND)
@@ -61,7 +64,7 @@ class ItemController {
 
         if (employee) {
             items.remove(employee)
-            return new ResponseEntity(HttpStatus.OK)
+            return new ResponseEntity(HttpStatus.NO_CONTENT)
         } else {
             return new ResponseEntity(HttpStatus.NOT_FOUND)
         }
