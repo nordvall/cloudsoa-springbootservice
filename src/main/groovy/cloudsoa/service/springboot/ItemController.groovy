@@ -18,8 +18,8 @@ class ItemController {
     private static int counter
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<Item> list() {
-        return items
+    public Map list() {
+        return [ items: items ]
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
